@@ -1,0 +1,27 @@
+{
+  "name": "rapMockDownload",
+  "version": "1.0.0",
+  "description": "下载rap上的mock数据",
+  "main": "index-compiled.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xjchenhao/rapMockDownload.git"
+  },
+  "keywords": [
+    "RAP",
+    "mock"
+  ],
+  "author": "xjchenhao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xjchenhao/rapMockDownload/issues"
+  },
+  "homepage": "https://github.com/xjchenhao/rapMockDownload#readme",
+  "devDependencies": {
+    "mass_fs": "git+https://github.com/RubyLouvre/hfs.git",
+    "underscore": "^1.8.3"
+  }
+}
