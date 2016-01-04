@@ -1,5 +1,5 @@
 {
-  "name": "rapMockDownload",
+  "name": "rap-mock",
   "version": "1.0.0",
   "description": "下载rap上的mock数据",
   "main": "index-compiled.js",
