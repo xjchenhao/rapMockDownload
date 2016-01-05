@@ -1,11 +1,11 @@
 var http = require('http'),
     _ = require('underscore'),
-    fs = require('fs'),
     hfs = require('mass_fs');
 
 var rapMock = function (opts) {
     opts = _.extend({
-        domain: 'http://www.rapapi.net',    // rap的域
+        rapDomain: 'http://www.rapapi.net', // rap的域
+        apiDomain: '',                       // 接口的域
         projectId: 1,                       // 项目的id
         createPath: '',                     // 生成的mock文件路径
         isAnnotation: true,                 // 是否输出注释
@@ -19,7 +19,7 @@ var rapMock = function (opts) {
         writeAfter: ''                      // 后面添加文本
     }, opts);
 
-    var url = opts.domain + '/api/queryModel.do?projectId=' + opts.projectId;
+    var url = opts.rapDomain + '/api/queryModel.do?projectId=' + opts.projectId;
 
     var apiIndex = 0,
         apiTotal = 0,
@@ -38,7 +38,7 @@ var rapMock = function (opts) {
             //插入mock模板
             mockArr.forEach(function (obj) {
                 word += '// ' + obj.resName + '\n';
-                word += 'Mock.mock(\'' + obj.reqUrl + '\',' + obj.resCont + ');\n\n';
+                word += 'Mock.mock(\'' + obj.apiDomain + obj.reqUrl + '\',' + obj.resCont + ');\n\n';
             });
 
             //文档后插入文本
@@ -107,7 +107,7 @@ var rapMock = function (opts) {
 
                         opts.isLog && console.log('|-----' + interfaceList.name + ':' + interfaceList.reqUrl);
 
-                        http.get(opts.domain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
+                        http.get(opts.rapDomain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
                             var html = '';
 
                             res.on('data', function (data) {
