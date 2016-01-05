@@ -1,29 +1,12 @@
 'use strict';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _http = require('http');
-
-var _http2 = _interopRequireDefault(_http);
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _mass_fs = require('mass_fs');
-
-var _mass_fs2 = _interopRequireDefault(_mass_fs);
+var http = require('http'),
+    fs = require('fs'),
+    _ = require('underscore'),
+    hfs = require('mass_fs');
 
 var rapMock = function rapMock(opts) {
-    opts = _underscore2['default'].extend({
+    opts = _.extend({
         domain: 'http://www.rapapi.net', // rap的域
         projectId: 1, // 项目的id
         createPath: '', // 生成的mock文件路径
@@ -39,7 +22,7 @@ var rapMock = function rapMock(opts) {
     }, opts);
 
     // 创建文件及目录
-    _mass_fs2['default'].writeFileSync(opts.createPath);
+    hfs.writeFileSync(opts.createPath);
 
     var url = opts.domain + '/api/queryModel.do?projectId=' + opts.projectId;
 
@@ -52,14 +35,14 @@ var rapMock = function rapMock(opts) {
         }
 
         mockArr.forEach(function (obj) {
-            opts.isAnnotation && _fs2['default'].appendFileSync(opts.createPath, '// ' + obj.resName + '\n');
-            _fs2['default'].appendFileSync(opts.createPath, 'Mock.mock(\'' + obj.reqUrl + '\',' + obj.resCont + ');\n\n');
+            opts.isAnnotation && fs.appendFileSync(opts.createPath, '// ' + obj.resName + '\n');
+            fs.appendFileSync(opts.createPath, 'Mock.mock(\'' + obj.reqUrl + '\',' + obj.resCont + ');\n\n');
         });
 
-        _fs2['default'].appendFileSync(opts.createPath, opts.writeAfter);
+        fs.appendFileSync(opts.createPath, opts.writeAfter);
     };
 
-    var request = _http2['default'].get(url, function (res) {
+    var request = http.get(url, function (res) {
         var html = '';
 
         res.on('data', function (data) {
@@ -80,21 +63,21 @@ var rapMock = function rapMock(opts) {
 
             //计算api总接口数(用来给api请求回调判断是否全部请求完成)
             resultData['model'].moduleList.forEach(function (moduleList) {
-                if (_underscore2['default'].find(opts.ignore.moduleList, function (x) {
+                if (_.find(opts.ignore.moduleList, function (x) {
                     return x == moduleList.name;
                 })) {
                     return false;
                 }
 
                 moduleList['pageList'].forEach(function (pageList) {
-                    if (_underscore2['default'].find(opts.ignore.pageList, function (x) {
+                    if (_.find(opts.ignore.pageList, function (x) {
                         return x == pageList.name;
                     })) {
                         return false;
                     }
 
                     pageList['interfaceList'].forEach(function (interfaceList) {
-                        if (_underscore2['default'].find(opts.ignore.interfaceList, function (x) {
+                        if (_.find(opts.ignore.interfaceList, function (x) {
                             return x == interfaceList.name;
                         })) {
                             return false;
@@ -105,17 +88,17 @@ var rapMock = function rapMock(opts) {
             });
 
             //文档前添加文本
-            _fs2['default'].writeFileSync(opts.createPath, opts.writeBefore);
+            fs.writeFileSync(opts.createPath, opts.writeBefore);
 
             resultData['model'].moduleList.forEach(function (moduleList) {
-                if (_underscore2['default'].find(opts.ignore.moduleList, function (x) {
+                if (_.find(opts.ignore.moduleList, function (x) {
                     return x == moduleList.name;
                 })) {
                     return false;
                 }
 
                 moduleList['pageList'].forEach(function (pageList) {
-                    if (_underscore2['default'].find(opts.ignore.pageList, function (x) {
+                    if (_.find(opts.ignore.pageList, function (x) {
                         return x == pageList.name;
                     })) {
                         return false;
@@ -125,7 +108,7 @@ var rapMock = function rapMock(opts) {
                     //opts.isAnnotation && fs.appendFileSync(opts.createPath, '//--------------------------【' + pageList.name + '】\n');
 
                     pageList['interfaceList'].forEach(function (interfaceList) {
-                        if (_underscore2['default'].find(opts.ignore.interfaceList, function (x) {
+                        if (_.find(opts.ignore.interfaceList, function (x) {
                             return x == interfaceList.name;
                         })) {
                             return false;
@@ -133,7 +116,7 @@ var rapMock = function rapMock(opts) {
 
                         opts.isLog && console.log('|-----' + interfaceList.name + ':' + interfaceList.reqUrl);
 
-                        _http2['default'].get(opts.domain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
+                        http.get(opts.domain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
                             var html = '';
 
                             res.on('data', function (data) {
@@ -184,20 +167,5 @@ var rapMock = function rapMock(opts) {
 };
 
 module.exports = rapMock;
-
-//rapMock({
-//    domain: 'http://10.0.0.3:7777',
-//    projectId: 1,
-//    createPath: './qq/aa/99.js',
-//    isAnnotation: true,
-//    isLog: false,
-//    ignore: {
-//        moduleList: ['活动相关', '公共接口', '交易接口', '首页接口'],
-//        pageList: [],
-//        interfaceList: ['公用参数']
-//    },
-//    writeBefore: '\/\/writeBefore\n',
-//    writeAfter: '\/\/writeAfter\n'
-//});
 
 //# sourceMappingURL=index-compiled.js.map

@@ -1,8 +1,7 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
-import _ from 'underscore';
-import hfs from 'mass_fs';
+var http = require('http'),
+    fs = require('fs'),
+    _ = require('underscore'),
+    hfs = require('mass_fs');
 
 var rapMock = function (opts) {
     opts = _.extend({
@@ -156,18 +155,3 @@ var rapMock = function (opts) {
 };
 
 module.exports = rapMock;
-
-//rapMock({
-//    domain: 'http://10.0.0.3:7777',
-//    projectId: 1,
-//    createPath: './qq/aa/99.js',
-//    isAnnotation: true,
-//    isLog: false,
-//    ignore: {
-//        moduleList: ['活动相关', '公共接口', '交易接口', '首页接口'],
-//        pageList: [],
-//        interfaceList: ['公用参数']
-//    },
-//    writeBefore: '\/\/writeBefore\n',
-//    writeAfter: '\/\/writeAfter\n'
-//});
