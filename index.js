@@ -1,6 +1,6 @@
 var http = require('http'),
-    fs = require('fs'),
     _ = require('underscore'),
+    fs = require('fs'),
     hfs = require('mass_fs');
 
 var rapMock = function (opts) {
@@ -19,9 +19,6 @@ var rapMock = function (opts) {
         writeAfter: ''                      // 后面添加文本
     }, opts);
 
-    // 创建文件及目录
-    hfs.writeFileSync(opts.createPath);
-
     var url = opts.domain + '/api/queryModel.do?projectId=' + opts.projectId;
 
     var apiIndex = 0,
@@ -29,16 +26,26 @@ var rapMock = function (opts) {
         mockArr = [],
 
         endCallback = function () {
+            var word = '';
+
             if (apiIndex < apiTotal) {
                 return false;
             }
 
+            //文档前添加文本
+            word += opts.writeBefore;
+
+            //插入mock模板
             mockArr.forEach(function (obj) {
-                opts.isAnnotation && fs.appendFileSync(opts.createPath, '// ' + obj.resName + '\n');
-                fs.appendFileSync(opts.createPath, 'Mock.mock(\'' + obj.reqUrl + '\',' + obj.resCont + ');\n\n');
+                word += '// ' + obj.resName + '\n';
+                word += 'Mock.mock(\'' + obj.reqUrl + '\',' + obj.resCont + ');\n\n';
             });
 
-            fs.appendFileSync(opts.createPath, opts.writeAfter);
+            //文档后插入文本
+            word += opts.writeAfter;
+
+            // 输出文件
+            hfs.writeFile(opts.createPath, word);
         };
 
     var request = http.get(url, function (res) {
@@ -80,9 +87,6 @@ var rapMock = function (opts) {
                 });
             });
 
-            //文档前添加文本
-            fs.writeFileSync(opts.createPath, opts.writeBefore);
-
             resultData['model'].moduleList.forEach(function (moduleList) {
                 if (_.find(opts.ignore.moduleList, x => x == moduleList.name)) {
                     return false;
@@ -112,8 +116,6 @@ var rapMock = function (opts) {
 
                             res.on('end', function () {
 
-                                html = JSON.stringify(JSON.parse(html), null, 2);
-
                                 mockArr.push({
                                     reqUrl: interfaceList.reqUrl,
                                     resName: interfaceList.name,
@@ -128,9 +130,6 @@ var rapMock = function (opts) {
 
                 })
             });
-
-            //文档后添加文本
-            //fs.appendFile(opts.createPath, opts.writeAfter);
         });
 
         res.on('error', function (err) {
