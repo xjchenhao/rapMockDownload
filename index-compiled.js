@@ -39,7 +39,7 @@ var rapMock = function rapMock(opts) {
         //插入mock模板
         mockArr.forEach(function (obj) {
             word += '// ' + obj.resName + '\n';
-            word += 'Mock.mock(\'' + obj.apiDomain + obj.reqUrl + '\',' + obj.resCont + ');\n\n';
+            word += 'Mock.mock(\'' + opts.apiDomain + obj.reqUrl + '\',' + obj.resCont + ');\n\n';
         });
 
         //文档后插入文本
