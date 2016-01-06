@@ -21,14 +21,13 @@ var rapMock = function (opts) {
 
     var url = opts.rapDomain + '/api/queryModel.do?projectId=' + opts.projectId;
 
-    var apiIndex = 0,
-        apiTotal = 0,
+    var count = 0,
         mockArr = [],
 
         endCallback = function () {
             var word = '';
 
-            if (apiIndex < apiTotal) {
+            if (count) {
                 return false;
             }
 
@@ -67,26 +66,6 @@ var rapMock = function (opts) {
                 return false;
             }
 
-            //计算api总接口数(用来给api请求回调判断是否全部请求完成)
-            resultData['model'].moduleList.forEach(function (moduleList) {
-                if (_.find(opts.ignore.moduleList, x => x == moduleList.name)) {
-                    return false;
-                }
-
-                moduleList['pageList'].forEach(function (pageList) {
-                    if (_.find(opts.ignore.pageList, x => x == pageList.name)) {
-                        return false;
-                    }
-
-                    pageList['interfaceList'].forEach(function (interfaceList) {
-                        if (_.find(opts.ignore.interfaceList, x => x == interfaceList.name)) {
-                            return false;
-                        }
-                        apiTotal++;
-                    });
-                });
-            });
-
             resultData['model'].moduleList.forEach(function (moduleList) {
                 if (_.find(opts.ignore.moduleList, x => x == moduleList.name)) {
                     return false;
@@ -107,6 +86,8 @@ var rapMock = function (opts) {
 
                         opts.isLog && console.log('|-----' + interfaceList.name + ':' + interfaceList.reqUrl);
 
+                        count++;
+
                         http.get(opts.rapDomain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
                             var html = '';
 
@@ -115,13 +96,13 @@ var rapMock = function (opts) {
                             });
 
                             res.on('end', function () {
+                                count--;
 
                                 mockArr.push({
                                     reqUrl: interfaceList.reqUrl,
                                     resName: interfaceList.name,
                                     resCont: html
                                 });
-                                apiIndex++;
 
                                 endCallback();
                             });
