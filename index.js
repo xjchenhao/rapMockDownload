@@ -4,7 +4,7 @@ var http = require('http'),
 
 var rapMock = function (opts) {
     opts = _.extend({
-        rapDomain: 'http://www.rapapi.net', // rap的域
+        rapDomain: 'http://rap.taobao.org', // rap的域
         apiDomain: '',                       // 接口的域
         projectId: 1,                       // 项目的id
         createPath: '',                     // 生成的mock文件路径
@@ -88,7 +88,7 @@ var rapMock = function (opts) {
 
                         count++;
 
-                        http.get(opts.rapDomain + '/mockjs/1' + interfaceList.reqUrl, function (res) {
+                        http.get(opts.rapDomain + '/mockjs/'+opts.projectId + interfaceList.reqUrl, function (res) {
                             var html = '';
 
                             res.on('data', function (data) {

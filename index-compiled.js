@@ -95,7 +95,7 @@ var rapMock = function rapMock(opts) {
 
                         count++;
 
-                        http.get(opts.rapDomain + '/mockjs/'+opts.projectId + interfaceList.reqUrl, function (res) {
+                        http.get(opts.rapDomain + '/mockjs/' + opts.projectId + interfaceList.reqUrl, function (res) {
                             var html = '';
 
                             res.on('data', function (data) {
